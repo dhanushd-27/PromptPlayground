@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { HistoryItem } from "@/lib/types";
+
 import {
   HumanMessage,
   AIMessage,
@@ -11,27 +13,50 @@ const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
 });
 
-const SYSTEM_PROMPT = `You are a prompt engineering expert. 
-Your task is to analyze the user's input prompt and score it from 1 to 10 based on:
-1. Clarity
-2. Specificity
-3. Context provided
-4. Actionability
+const SYSTEM_PROMPT = `You are a **prompt engineering expert**.
 
-Provide your response in the following format:
+Your task is to **analyze the user's input prompt** and assign a **score from 1 to 10** based on the following criteria:
+
+1. **Clarity**  
+   – How easy is the prompt to understand?
+
+2. **Specificity**  
+   – How precise and unambiguous is the request?
+
+3. **Context Provided**  
+   – Does the prompt include enough background or constraints?
+
+4. **Actionability**  
+   – Can the model confidently act on the prompt without making assumptions?
+
+
+### Response Formatting Requirements
+
+- The response **must be written in Markdown (.md)**
+- Use **clear spacing and line breaks** between sections
+- Avoid dense paragraphs; prefer short, readable blocks
+- Follow **exactly** the format below:
+
+
 Score: [X]/10
-Reasoning: [Brief explanation]
----
-[Your actual response to the user's prompt]`;
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+Reasoning:  
+[Brief and clear explanation justifying the score]
+
+---
+
+[Your improved or actual response to the user's prompt]
+
+
+### Additional Instructions
+
+- Be concise but precise  
+- Do not add extra sections outside the specified format  
+- Ensure the response is easy to scan and visually clean`;
 
 export async function POST(req: NextRequest) {
   try {
-    const { userPrompt, history } = await req.json();
+    const { userPrompt, history }: { userPrompt: string, history: HistoryItem[] } = await req.json();
 
     if (!userPrompt) {
       return NextResponse.json(
@@ -40,7 +65,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const chatHistory = (history || []).map((msg: Message) => {
+    const chatHistory = (history || []).map((msg: HistoryItem) => {
       if (msg.role === "user") {
         return new HumanMessage(msg.content);
       } else if (msg.role === "assistant") {

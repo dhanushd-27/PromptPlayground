@@ -33,7 +33,7 @@ export default function ChatView() {
       exit={{ opacity: 0, scale: 0.95, y: 999 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <div className="flex-1 overflow-y-auto mb-4 bg-white/5 rounded-2xl border border-white/10 p-4 backdrop-blur-xl">
+      <div className="flex-1 overflow-y-auto mb-4  p-4 backdrop-blur-xl">
         <p className="text-neutral-500 italic text-sm pb-4">
           Chat session started.
         </p>

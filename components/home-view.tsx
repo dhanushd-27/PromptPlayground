@@ -13,7 +13,10 @@ export default function HomeView() {
       exit={{ opacity: 0, scale: 0.9, y: 999 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
     >
-      <p className="text-2xl font-bold text-white">Prompt Playground</p>
+      <div className="flex flex-col items-center gap-2">
+        <h3 className="text-xl md:text-2xl font-bold text-white">Prompt Playground</h3>
+        <p className="text-sm md:text-base max-w-2xl text-center text-neutral-500">Prompt playground is a tool to evaluate your prompt and score it and improve it</p>
+      </div>
       <ChatInput />
     </motion.div>
   );
