@@ -1,22 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface ChatActiveState {
-  value: boolean
+  value: boolean;
+  isGenerating: boolean;
 }
 
 const initialState: ChatActiveState = {
-  value: false
-}
+  value: false,
+  isGenerating: false,
+};
 
 const ChatActiveSlice = createSlice({
   name: "chatActive",
   initialState,
   reducers: {
     setIsChatActive: (state, action) => {
-      state.value = action.payload
-    }
-  }
-})
+      state.value = action.payload;
+    },
+    setIsGenerating: (state, action) => {
+      state.isGenerating = action.payload;
+    },
+  },
+});
 
-export const { setIsChatActive } = ChatActiveSlice.actions
-export default ChatActiveSlice.reducer
+export const { setIsChatActive, setIsGenerating } = ChatActiveSlice.actions;
+export default ChatActiveSlice.reducer;

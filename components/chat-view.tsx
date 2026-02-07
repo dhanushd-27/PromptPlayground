@@ -5,19 +5,25 @@ import ChatInput from "./chat-input";
 import { motion } from "framer-motion";
 import AssistantMessage from "./ui/assistantMessage";
 import HumanMessage from "./ui/humanMessage";
+import MessageSkeleton from "./ui/message-skeleton";
+import { HistoryItem } from "@/lib/types";
+import { useAppSelector } from "@/lib/hooks/redux";
+
+import { getLocalStorage } from "@/lib/utils/localStorage";
 
 export default function ChatView() {
+  const [messages, setMessages] = React.useState<HistoryItem[]>([]);
+  const isGenerating = useAppSelector((state) => state.chatActive.isGenerating);
 
-  const messages = [
-    {
-      role: "assistant",
-      content: "Hello! How can I help you today?",
-    },
-    {
-      role: "human",
-      content: "Here is my prompt - 'You are a AI Chatbot, responsible for fixing my mathematics equation - Fix the equation and give the right answer'",
-    },
-  ];
+  React.useEffect(() => {
+    const updateMessages = () => {
+      setMessages(getLocalStorage<HistoryItem[]>("history", []));
+    };
+
+    updateMessages();
+    window.addEventListener("storage_update", updateMessages);
+    return () => window.removeEventListener("storage_update", updateMessages);
+  }, []);
 
   return (
     <motion.div
@@ -45,6 +51,7 @@ export default function ChatView() {
               )}
             </React.Fragment>
           ))}
+          {isGenerating && <MessageSkeleton />}
         </div>
       </div>
       <ChatInput />
