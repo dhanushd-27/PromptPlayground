@@ -24,6 +24,11 @@ Reasoning: [Brief explanation]
 ---
 [Your actual response to the user's prompt]`;
 
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { userPrompt, history } = await req.json();
@@ -35,7 +40,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const chatHistory = (history || []).map((msg: any) => {
+    const chatHistory = (history || []).map((msg: Message) => {
       if (msg.role === "user") {
         return new HumanMessage(msg.content);
       } else if (msg.role === "assistant") {
@@ -55,10 +60,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       content: response.content,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in generate route:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      {
+        error: "Internal Server Error",
+        details:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      },
       { status: 500 },
     );
   }
