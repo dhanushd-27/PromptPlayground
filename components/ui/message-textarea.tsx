@@ -11,7 +11,7 @@ export function MessageTextarea({
   value,
   onChange,
   onKeyDown,
-  placeholder = "Type a message...",
+  placeholder = "Enter your prompt...",
 }: MessageTextareaProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
